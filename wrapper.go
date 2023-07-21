@@ -48,7 +48,7 @@ func (a apiWrapper) encrypt(payloadInByte []byte, identifier string) []byte {
 	identifierLength := len(identifier)
 	for i := 0; i < payloadInByteLength; i++ {
 		char := payloadInByte[i]
-		keyChar := identifier[(i+identifierLength-1)%payloadInByteLength]
+		keyChar := identifier[(i+identifierLength-1)%identifierLength]
 		char = byte((int(char) + int(keyChar)) % 128)
 		result = append(result, char)
 	}
