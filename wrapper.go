@@ -17,6 +17,7 @@ type apiWrapper struct {
 }
 type ApiWrapper interface {
 	Encrypt(json string) string
+	Decrypt(encryptedPayload string) (string, error)
 }
 
 func New(Expired float64, ClientID, SecretKey string) ApiWrapper {
@@ -26,12 +27,12 @@ func New(Expired float64, ClientID, SecretKey string) ApiWrapper {
 		SecretKey: SecretKey,
 	}
 }
-func (a apiWrapper) Encrypt(json string) string {
-	return a.doubleEncrypt(a.reverse(fmt.Sprintf("%v", time.Now().Unix())) + "." + json)
+func (a apiWrapper) Encrypt(payload string) string {
+	return a.doubleEncrypt(a.reverse(fmt.Sprintf("%v", time.Now().Unix())) + "." + payload)
 }
 
-func (a apiWrapper) Decrypt(encrypted string) (string, error) {
-	parsedString := a.doubleDecrypt(encrypted)
+func (a apiWrapper) Decrypt(encryptedPayload string) (string, error) {
+	parsedString := a.doubleDecrypt(encryptedPayload)
 	var lst = strings.SplitN(parsedString, ".", 2)
 	if len(lst) < 2 {
 		return "", errors.New("parsing error, wrong client_id or secret key or invalid data")
